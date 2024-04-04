@@ -125,6 +125,7 @@ void VulkanContext::populate_imgui_init_info(ImGui_ImplVulkan_InitInfo &out_init
 	out_init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 	out_init_info.Allocator = nullptr;
 	out_init_info.CheckVkResultFn = nullptr;
+	out_init_info.RenderPass = get_main_render_pass();
 }
 
 int32_t VulkanContext::find_memory_index(uint32_t type_filter, VkMemoryPropertyFlags memory_flags)

@@ -25,7 +25,7 @@ ImGuiInstance::ImGuiInstance(VulkanContext *context)
 	ImGui_ImplVulkan_InitInfo init_info = {};
 	vulkan_context_->populate_imgui_init_info(init_info);
 	
-	ImGui_ImplVulkan_Init(&init_info, vulkan_context_->get_main_render_pass());
+	ImGui_ImplVulkan_Init(&init_info);
 }
 ImGuiInstance::~ImGuiInstance()
 {
