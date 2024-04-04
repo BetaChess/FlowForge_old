@@ -2,7 +2,7 @@
 
 #include <imgui_impl_vulkan.h>
 
-namespace aito
+namespace flwfrg
 {
 class VulkanContext;
 
@@ -26,4 +26,4 @@ private:
 	bool context_created_ = false;
 };
 
-}// namespace aito
+}// namespace flwfrg

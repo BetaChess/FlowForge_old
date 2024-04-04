@@ -1,5 +1,5 @@
 #pragma once
-// Set the logger to log all, so aito can decide what to log itself.
+// Set the logger to log all, so flwfrg can decide what to log itself.
 #define SPDLOG_ACTIVE_LEVEL 0
 
 
@@ -10,8 +10,7 @@
 #undef far
 
 
-
-namespace aito
+namespace flwfrg
 {
 
 class Logger
@@ -21,14 +20,14 @@ private:
 
 public:
 	static void init();
-	
-	inline static std::shared_ptr<spdlog::logger>& get_core_logger() { return core_logger_s; };
-};
-	
-}
 
-#define AITO_TRACE(...)	SPDLOG_LOGGER_TRACE(aito::Logger::get_core_logger(), __VA_ARGS__)
-#define AITO_INFO(...)	SPDLOG_LOGGER_INFO(aito::Logger::get_core_logger(), __VA_ARGS__)
-#define AITO_WARN(...)	SPDLOG_LOGGER_WARN(aito::Logger::get_core_logger(), __VA_ARGS__)
-#define AITO_ERROR(...)	SPDLOG_LOGGER_ERROR(aito::Logger::get_core_logger(), __VA_ARGS__)
-#define AITO_FATAL(...)	SPDLOG_LOGGER_CRITICAL(aito::Logger::get_core_logger(), __VA_ARGS__)
+	inline static std::shared_ptr<spdlog::logger> &get_core_logger() { return core_logger_s; };
+};
+
+}// namespace flwfrg
+
+#define FLOWFORGE_TRACE(...) SPDLOG_LOGGER_TRACE(flwfrg::Logger::get_core_logger(), __VA_ARGS__)
+#define FLOWFORGE_INFO(...) SPDLOG_LOGGER_INFO(flwfrg::Logger::get_core_logger(), __VA_ARGS__)
+#define FLOWFORGE_WARN(...) SPDLOG_LOGGER_WARN(flwfrg::Logger::get_core_logger(), __VA_ARGS__)
+#define FLOWFORGE_ERROR(...) SPDLOG_LOGGER_ERROR(flwfrg::Logger::get_core_logger(), __VA_ARGS__)
+#define FLOWFORGE_FATAL(...) SPDLOG_LOGGER_CRITICAL(flwfrg::Logger::get_core_logger(), __VA_ARGS__)

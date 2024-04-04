@@ -5,7 +5,7 @@
 #include "../vulkan_context.hpp"
 #include "vertex.hpp"
 
-namespace aito
+namespace flwfrg
 {
 VulkanObjectShader::VulkanObjectShader(VulkanContext *context)
 	: context_(context)
@@ -359,4 +359,4 @@ void VulkanObjectShader::release_resources(uint32_t object_id)
 	// TODO: add the object id back into the pool
 }
 
-}// namespace aito
+}// namespace flwfrg

@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace aito
+namespace flwfrg
 {
 class VulkanContext;
 
@@ -56,4 +56,4 @@ private:
 	uint32_t memory_property_flags_ = 0;
 };
 
-}// namespace aito
+}// namespace flwfrg

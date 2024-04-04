@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-namespace aito
+namespace flwfrg
 {
 
 struct Vertex3d

@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-namespace aito
+namespace flwfrg
 {
 
 class Window
@@ -56,4 +56,4 @@ private:
 	static void framebuffer_resize_callback(GLFWwindow *window, int width, int height);
 };
 
-}// namespace aito
+}// namespace flwfrg

@@ -6,7 +6,7 @@
 #include "frame_buffer.hpp"
 #include "image.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 class VulkanSwapchain
@@ -48,4 +48,4 @@ private:
 };
 
 
-}// namespace aito
+}// namespace flwfrg

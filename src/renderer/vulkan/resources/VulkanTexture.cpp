@@ -5,7 +5,7 @@
 #include "renderer/vulkan/buffer.hpp"
 #include "renderer/vulkan/vulkan_context.hpp"
 
-namespace aito
+namespace flwfrg
 {
 VulkanTexture::VulkanTexture(VulkanContext *context, uint32_t id, uint32_t width, uint32_t height, uint8_t channel_count, bool has_transparency, std::vector<Data> data)
 	: context_{context},
@@ -88,4 +88,4 @@ VulkanTexture::~VulkanTexture()
 	}
 }
 
-}// namespace aito
+}// namespace flwfrg

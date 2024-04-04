@@ -2,7 +2,7 @@
 
 #include "renderer/vulkan/renderer.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 class Application
@@ -17,4 +17,4 @@ private:
 	VulkanRenderer renderer_{1280, 800, "TestName"};
 };
 
-}// namespace aito
+}// namespace flwfrg

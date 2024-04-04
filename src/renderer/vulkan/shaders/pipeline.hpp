@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace aito
+namespace flwfrg
 {
 class VulkanContext;
 class VulkanRenderpass;
@@ -47,4 +47,4 @@ private:
 	VkPipelineLayout pipeline_layout_{VK_NULL_HANDLE};
 };
 
-}// namespace aito
+}// namespace flwfrg

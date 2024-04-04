@@ -337,9 +337,9 @@ static void FramePresent(ImGui_ImplVulkanH_Window *wd)
 
 int main(int, char **)
 {
-	aito::Logger::init();
+	flwfrg::Logger::init();
 
-	aito::Application application{};
+	flwfrg::Application application{};
 
 	//
 	//	ImVector<const char*> extensions;
@@ -533,16 +533,16 @@ int main(int, char **)
 
 int main()
 {
-	aito::Logger::init();
+	flwfrg::Logger::init();
 
 	try
 	{
-		aito::Application application{};
+		flwfrg::Application application{};
 
 		application.run();
 	} catch (const std::exception &e)
 	{
-		AITO_FATAL(e.what());
+		FLOWFORGE_FATAL(e.what());
 	}
 
 	return 0;

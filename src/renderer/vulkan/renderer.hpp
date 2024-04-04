@@ -10,7 +10,7 @@
 
 #include "resources/VulkanTexture.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 class VulkanRenderer
@@ -33,4 +33,4 @@ private:
 	VulkanContext vulkan_context_;
 };
 
-}// namespace aito
+}// namespace flwfrg

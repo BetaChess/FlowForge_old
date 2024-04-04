@@ -2,7 +2,7 @@
 
 #include "renderer/vulkan/image.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 class VulkanContext;
@@ -47,4 +47,4 @@ private:
 	VkSampler sampler_ = VK_NULL_HANDLE;
 };
 
-}// namespace aito
+}// namespace flwfrg

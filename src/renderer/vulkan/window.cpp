@@ -5,7 +5,7 @@
 #include <GL/gl.h>
 
 
-namespace aito
+namespace flwfrg
 {
 Window::Window(size_t w, size_t h, const std::string& name)
 	: frame_buffer_width_(static_cast<uint32_t>(w)), frame_buffer_height_(static_cast<uint32_t>(h)), windowName_(name)
@@ -18,16 +18,16 @@ Window::Window(size_t w, size_t h, const std::string& name)
 	
 	if (!glfwVulkanSupported())
 	{
-		AITO_FATAL("Vulkan isn't supported");
+		FLOWFORGE_FATAL("Vulkan isn't supported");
 	}
 	
-	AITO_INFO("GLFW window created");
+	FLOWFORGE_INFO("GLFW window created");
 }
 
 Window::~Window()
 {
 	glfwDestroyWindow(window_);
-	AITO_INFO("GLFW window destroyed");
+	FLOWFORGE_INFO("GLFW window destroyed");
 }
 VkSurfaceKHR Window::create_window_surface(VkInstance instance) const
 {
@@ -53,4 +53,4 @@ void Window::framebuffer_resize_callback(GLFWwindow *window, int width, int heig
 		vulkanWindow->resize_callback_(vulkanWindow->callback_param_ptr_);
 }
 
-} // aito
+} // flwfrg

@@ -2,7 +2,7 @@
 
 #include "application.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 Application::Application()
@@ -29,4 +29,4 @@ void Application::run()
 	}
 }
 
-}// namespace aito
+}// namespace flwfrg

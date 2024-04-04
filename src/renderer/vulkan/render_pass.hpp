@@ -9,7 +9,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace aito
+namespace flwfrg
 {
 class VulkanFrameBuffer;
 class VulkanContext;

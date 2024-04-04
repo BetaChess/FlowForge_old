@@ -5,7 +5,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace aito
+namespace flwfrg
 {
 class VulkanContext;
 class VulkanRenderpass;
@@ -33,4 +33,4 @@ private:
 	std::vector<VkImageView> attachments_;
 };
 
-}// namespace aito
+}// namespace flwfrg

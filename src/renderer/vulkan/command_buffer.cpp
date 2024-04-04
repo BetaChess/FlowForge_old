@@ -4,7 +4,7 @@
 
 #include "vulkan_context.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 
@@ -27,7 +27,7 @@ VulkanCommandBuffer::VulkanCommandBuffer(VulkanContext *context, VkCommandPool p
 
 	pool_handle_ = pool;
 	state_ = State::READY;
-	AITO_TRACE("Command buffer created successfully");
+	FLOWFORGE_TRACE("Command buffer created successfully");
 }
 
 VulkanCommandBuffer::VulkanCommandBuffer(VulkanCommandBuffer &&other) noexcept
@@ -46,7 +46,7 @@ VulkanCommandBuffer::~VulkanCommandBuffer()
 	if (state_ != State::NOT_ALLOCATED)
 	{
 		vkFreeCommandBuffers(context_->device_.logical_device_, pool_handle_, 1, &handle_);
-		AITO_TRACE("Command buffer destroyed");
+		FLOWFORGE_TRACE("Command buffer destroyed");
 	}
 }
 
@@ -116,7 +116,7 @@ void VulkanCommandBuffer::reset()
 {
 	if (state_ == State::RECORDING)
 	{
-		AITO_WARN("Command buffer reset while recording");
+		FLOWFORGE_WARN("Command buffer reset while recording");
 	}
 
 	if (vkResetCommandBuffer(handle_, 0) != VK_SUCCESS)
@@ -144,4 +144,4 @@ void VulkanCommandBuffer::end_single_time_commands(VulkanContext *context, Vulka
 	command_buffer.reset();
 }
 
-}// namespace aito
+}// namespace flwfrg

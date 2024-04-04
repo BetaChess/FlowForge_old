@@ -7,7 +7,7 @@
 
 
 
-namespace aito
+namespace flwfrg
 {
 
 ///// Local helper functions
@@ -21,13 +21,13 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	
 	if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
 	{
-		AITO_ERROR("VK_VALIDATION {}", pCallbackData->pMessage);
+		FLOWFORGE_ERROR("VK_VALIDATION {}", pCallbackData->pMessage);
 	} else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
 	{
-		AITO_WARN("VK_VALIDATION {}", pCallbackData->pMessage);
+		FLOWFORGE_WARN("VK_VALIDATION {}", pCallbackData->pMessage);
 	} else
 	{
-		AITO_TRACE("VK_VALIDATION {}", pCallbackData->pMessage);
+		FLOWFORGE_TRACE("VK_VALIDATION {}", pCallbackData->pMessage);
 	}
 	
 	return VK_FALSE;
@@ -77,9 +77,9 @@ VulkanContext::VulkanContext(Window& window)
 {
 	window_.register_resize_callback(resize_callback, this);
 	
-	AITO_INFO("Creating frame buffers");
+	FLOWFORGE_INFO("Creating frame buffers");
 	regenerate_framebuffers();
-	AITO_INFO("Creating command buffers");
+	FLOWFORGE_INFO("Creating command buffers");
 	create_command_buffers();
 
 	image_avaliable_semaphores_.resize(swapchain_.max_frames_in_flight_);
@@ -141,7 +141,7 @@ int32_t VulkanContext::find_memory_index(uint32_t type_filter, VkMemoryPropertyF
 		}
 	}
 
-	AITO_WARN("Unable to find suitable memory type");
+	FLOWFORGE_WARN("Unable to find suitable memory type");
 	return -1;
 }
 
@@ -174,7 +174,7 @@ void VulkanContext::resize_callback(void *context)
 {
 	auto* vulkan_context = reinterpret_cast<VulkanContext*>(context);
 
-	AITO_TRACE("Resize callback beginning in vulkan context");
+	FLOWFORGE_TRACE("Resize callback beginning in vulkan context");
 
 	vulkan_context->swapchain_.recreate_swapchain();
 	vulkan_context->regenerate_framebuffers();
@@ -183,7 +183,7 @@ void VulkanContext::resize_callback(void *context)
 
 VulkanInstance::VulkanInstance()
 {
-	AITO_INFO("Creating Vulkan instance");
+	FLOWFORGE_INFO("Creating Vulkan instance");
 	
 	// Check if the validation layers are enabled and supported.
 	if (VulkanContext::enable_validation_layers_ && !validation_layers_supported(validationLayers))
@@ -197,11 +197,11 @@ VulkanInstance::VulkanInstance()
 	// Specify the struct as a type application info. (a struct used to give information about the instance).
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	// Set the name
-	appInfo.pApplicationName = "Aito";
+	appInfo.pApplicationName = "FlowForge";
 	// Specify the application version
 	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 	// A custom engine is used.
-	appInfo.pEngineName = "No engine";
+	appInfo.pEngineName = "FlowForge";
 	// Specify the engine version
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 	// Specify the vulkan API version.
@@ -262,7 +262,7 @@ VulkanInstance::VulkanInstance()
 VulkanInstance::~VulkanInstance()
 {
 	vkDestroyInstance(instance_, nullptr);
-	AITO_INFO("Vulkan instance destroyed");
+	FLOWFORGE_INFO("Vulkan instance destroyed");
 }
 
 bool VulkanInstance::validation_layers_supported(const std::vector<const char *> &layers)
@@ -284,7 +284,7 @@ bool VulkanInstance::validation_layers_supported(const std::vector<const char *>
 		for (const auto &layer: availableLayers)
 			ss << "\n\t" << layer.layerName;
 
-		AITO_TRACE(ss.str());
+		FLOWFORGE_TRACE(ss.str());
 	}
 
 	// Iterate through each layer name in the list of required layers
@@ -305,7 +305,7 @@ bool VulkanInstance::validation_layers_supported(const std::vector<const char *>
 		// If any layer is not found. Return false.
 		if (!layerFound)
 		{
-			AITO_ERROR("Layer was not found during Validation Layer Support checking! Layer name is: {}", layerName);
+			FLOWFORGE_ERROR("Layer was not found during Validation Layer Support checking! Layer name is: {}", layerName);
 			return false;
 		}
 	}
@@ -358,7 +358,7 @@ void VulkanInstance::check_glfw_required_instance_extensions()
 			available.insert(extension.extensionName);
 		}
 		
-		AITO_TRACE(ss.str());
+		FLOWFORGE_TRACE(ss.str());
 	}
 	
 	{
@@ -374,12 +374,12 @@ void VulkanInstance::check_glfw_required_instance_extensions()
 			// If the required extension is not available, throw a runtime error.
 			if (available.find(required) == available.end())
 			{
-				AITO_FATAL("Missing required glfw extension ({})", required);
+				FLOWFORGE_FATAL("Missing required glfw extension ({})", required);
 				throw std::runtime_error("Missing required glfw extension");
 			}
 		}
 		
-		AITO_TRACE(ss.str());
+		FLOWFORGE_TRACE(ss.str());
 	}
 }
 
@@ -387,7 +387,7 @@ void VulkanInstance::check_glfw_required_instance_extensions()
 VulkanDebugMessenger::VulkanDebugMessenger(const VulkanInstance& instance)
 	: instance_{instance}
 {
-	AITO_INFO("Setting Vulkan debug messenger");
+	FLOWFORGE_INFO("Setting Vulkan debug messenger");
 	
 	// Create the debug messenger create info.
 	VkDebugUtilsMessengerCreateInfoEXT createInfo{};
@@ -404,14 +404,14 @@ VulkanDebugMessenger::VulkanDebugMessenger(const VulkanInstance& instance)
 	// Try to create the debug messenger. Throw a runtime error if it failed.
 	if (CreateDebugUtilsMessengerEXT(instance_, &createInfo, nullptr, &debug_messenger_) != VK_SUCCESS)
 	{
-		AITO_FATAL("Failed to set up debug messenger");
+		FLOWFORGE_FATAL("Failed to set up debug messenger");
 		throw std::runtime_error("Failed to set up debug messenger!");
 	}
 }
 VulkanDebugMessenger::~VulkanDebugMessenger()
 {
 	DestroyDebugUtilsMessengerEXT(instance_, debug_messenger_, nullptr);
-	AITO_INFO("Vulkan debug callback destroyed");
+	FLOWFORGE_INFO("Vulkan debug callback destroyed");
 }
 VulkanSurface::VulkanSurface(const VulkanInstance &instance, const Window &window)
 	: instance_{instance}, window_{window}, surface_{window.create_window_surface(instance)}
@@ -420,7 +420,7 @@ VulkanSurface::VulkanSurface(const VulkanInstance &instance, const Window &windo
 VulkanSurface::~VulkanSurface()
 {
 	vkDestroySurfaceKHR(instance_, surface_, nullptr);
-	AITO_INFO("Vulkan surface destroyed");
+	FLOWFORGE_INFO("Vulkan surface destroyed");
 }
 
-}// namespace aito
+}// namespace flwfrg

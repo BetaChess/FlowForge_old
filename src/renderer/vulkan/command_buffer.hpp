@@ -2,11 +2,11 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace aito
+namespace flwfrg
 {
 class VulkanContext;
 }
-namespace aito
+namespace flwfrg
 {
 class VulkanRenderpass;
 
@@ -57,4 +57,4 @@ private:
 	friend VulkanRenderpass;
 };
 
-}// namespace aito
+}// namespace flwfrg

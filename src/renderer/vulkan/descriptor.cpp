@@ -4,7 +4,7 @@
 
 #include "vulkan_context.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 
@@ -91,4 +91,4 @@ VulkanDescriptorSetLayout &VulkanDescriptorSetLayout::operator=(VulkanDescriptor
 	return *this;
 }
 
-}// namespace aito
+}// namespace flwfrg

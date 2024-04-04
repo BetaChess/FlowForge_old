@@ -6,7 +6,7 @@
 
 #include <utility>
 
-namespace aito
+namespace flwfrg
 {
 
 VulkanFrameBuffer::VulkanFrameBuffer(VulkanContext *context, VulkanRenderpass &renderpass, uint32_t width, uint32_t height, std::vector<VkImageView> attachments)
@@ -29,7 +29,7 @@ VulkanFrameBuffer::VulkanFrameBuffer(VulkanContext *context, VulkanRenderpass &r
 	{
 		throw std::runtime_error("Failed to create framebuffer");
 	}
-	AITO_TRACE("Framebuffer created");
+	FLOWFORGE_TRACE("Framebuffer created");
 }
 
 VulkanFrameBuffer::VulkanFrameBuffer(VulkanFrameBuffer &&other) noexcept
@@ -46,8 +46,8 @@ VulkanFrameBuffer::~VulkanFrameBuffer()
 	if (handle_ != VK_NULL_HANDLE)
 	{
 		vkDestroyFramebuffer(context_->device_.logical_device_, handle_, nullptr);
-		AITO_TRACE("Framebuffer destroyed");
+		FLOWFORGE_TRACE("Framebuffer destroyed");
 	}
 }
 
-}// namespace aito
+}// namespace flwfrg

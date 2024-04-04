@@ -4,7 +4,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-namespace aito
+namespace flwfrg
 {
 class VulkanContext;
 
@@ -50,4 +50,4 @@ private:
 	VkDescriptorSetLayout layout_ = VK_NULL_HANDLE;
 };
 
-}// namespace aito
+}// namespace flwfrg

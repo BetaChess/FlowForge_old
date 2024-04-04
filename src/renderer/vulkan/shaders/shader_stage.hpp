@@ -2,7 +2,7 @@
 
 #include "imgui_impl_vulkan.h"
 
-namespace aito
+namespace flwfrg
 {
 class VulkanContext;
 
@@ -55,4 +55,4 @@ private:
 	VkPipelineShaderStageCreateInfo shader_stage_create_info{VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO};
 };
 
-}// namespace aito
+}// namespace flwfrg

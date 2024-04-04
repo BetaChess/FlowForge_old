@@ -4,7 +4,7 @@
 
 #include "vulkan_context.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 
@@ -176,4 +176,4 @@ void VulkanBuffer::copy_to(VulkanBuffer &dst, uint64_t dst_offset, uint64_t dst_
 }
 
 
-}// namespace aito
+}// namespace flwfrg

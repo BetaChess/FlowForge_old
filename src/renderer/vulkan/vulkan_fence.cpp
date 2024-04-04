@@ -4,7 +4,7 @@
 
 #include "vulkan_context.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 VulkanFence::VulkanFence(VulkanContext *context, bool signaled)
@@ -20,7 +20,7 @@ VulkanFence::VulkanFence(VulkanContext *context, bool signaled)
 	{
 		throw std::runtime_error("Failed to create fence");
 	}
-	AITO_TRACE("Fence created");
+	FLOWFORGE_TRACE("Fence created");
 }
 
 VulkanFence::VulkanFence(VulkanFence &&other) noexcept
@@ -38,7 +38,7 @@ VulkanFence::~VulkanFence()
 	if (handle_ != VK_NULL_HANDLE)
 	{
 		vkDestroyFence(context_->device_.logical_device_, handle_, nullptr);
-		AITO_TRACE("Fence destroyed");
+		FLOWFORGE_TRACE("Fence destroyed");
 	}
 }
 
@@ -58,19 +58,19 @@ bool VulkanFence::wait(uint64_t timeout_ns)
 		signaled_ = true;
 		return true;
 	case VK_TIMEOUT:
-		AITO_WARN("Fence wait timed out");
+		FLOWFORGE_WARN("Fence wait timed out");
 		return false;
 	case VK_ERROR_DEVICE_LOST:
-		AITO_ERROR("Device lost while waiting for fence");
+		FLOWFORGE_ERROR("Device lost while waiting for fence");
 		return false;
 	case VK_ERROR_OUT_OF_HOST_MEMORY:
-		AITO_ERROR("Out of host memory while waiting for fence");
+		FLOWFORGE_ERROR("Out of host memory while waiting for fence");
 		return false;
 	case VK_ERROR_OUT_OF_DEVICE_MEMORY:
-		AITO_ERROR("Out of device memory while waiting for fence");
+		FLOWFORGE_ERROR("Out of device memory while waiting for fence");
 		return false;
 	default:
-		AITO_ERROR("Failed to wait for fence. Unkown Error occurred. ");
+		FLOWFORGE_ERROR("Failed to wait for fence. Unkown Error occurred. ");
 		return false;
 	}
 }
@@ -82,7 +82,7 @@ void VulkanFence::reset()
 		// Reset fence and check result
 		if (vkResetFences(context_->device_.logical_device_, 1, &handle_) != VK_SUCCESS)
 		{
-			AITO_ERROR("Failed to reset fence");
+			FLOWFORGE_ERROR("Failed to reset fence");
 			return;
 		}
 		
@@ -90,4 +90,4 @@ void VulkanFence::reset()
 	}
 }
 
-}// namespace aito
+}// namespace flwfrg

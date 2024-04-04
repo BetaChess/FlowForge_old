@@ -4,10 +4,10 @@
 
 static void glfw_error_callback(int error, const char* description)
 {
-	AITO_ERROR("GLFW Error {}: {}", error, description);
+	FLOWFORGE_ERROR("GLFW Error {}: {}", error, description);
 }
 
-namespace aito
+namespace flwfrg
 {
 
 GLFWContext::GLFWContext()
@@ -15,16 +15,16 @@ GLFWContext::GLFWContext()
 	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit())
 	{
-		AITO_FATAL("GLFW Failed to initialize");
+		FLOWFORGE_FATAL("GLFW Failed to initialize");
 		throw std::runtime_error("GLFW Failed to initialize");
 	}
-	AITO_INFO("GLFW Initialised successfully");
+	FLOWFORGE_INFO("GLFW Initialised successfully");
 }
 
 GLFWContext::~GLFWContext()
 {
 	glfwTerminate();
-	AITO_INFO("GLFW terminated successfully");
+	FLOWFORGE_INFO("GLFW terminated successfully");
 }
 
 }

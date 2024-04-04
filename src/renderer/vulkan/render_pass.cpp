@@ -7,7 +7,7 @@
 #include <array>
 #include <vector>
 
-namespace aito
+namespace flwfrg
 {
 
 VulkanRenderpass::VulkanRenderpass(VulkanContext *context, glm::vec4 draw_area, glm::vec4 clear_color, float depth, uint32_t stencil)
@@ -108,7 +108,7 @@ VulkanRenderpass::VulkanRenderpass(VulkanContext *context, glm::vec4 draw_area, 
 	}
 
 	state_ = State::READY;
-	AITO_TRACE("Render pass created successfully");
+	FLOWFORGE_TRACE("Render pass created successfully");
 }
 
 VulkanRenderpass::~VulkanRenderpass()
@@ -116,7 +116,7 @@ VulkanRenderpass::~VulkanRenderpass()
 	if (state_ != State::NOT_ALLOCATED)
 	{
 		vkDestroyRenderPass(context_->device_.logical_device_, handle_, nullptr);
-		AITO_TRACE("Render pass destroyed");
+		FLOWFORGE_TRACE("Render pass destroyed");
 	}
 }
 
@@ -165,4 +165,4 @@ void VulkanRenderpass::end(VulkanCommandBuffer &command_buffer)
 	state_ = State::RECORDING_ENDED;
 }
 
-}// namespace aito
+}// namespace flwfrg

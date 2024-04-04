@@ -12,7 +12,7 @@
 
 #include <imgui_impl_vulkan.h>
 
-namespace aito
+namespace flwfrg
 {
 class VulkanRenderer;
 class VulkanImage;
@@ -162,4 +162,4 @@ private:
 	static void resize_callback(void *context);
 };
 
-}// namespace aito
+}// namespace flwfrg

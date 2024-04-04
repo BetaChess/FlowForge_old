@@ -6,7 +6,7 @@
 #include "renderer/vulkan/descriptor.hpp"
 #include "shader_stage.hpp"
 
-namespace aito
+namespace flwfrg
 {
 class VulkanContext;
 
@@ -67,4 +67,4 @@ private:
 	static constexpr const char *shader_file_name = "object_shader";
 };
 
-}// namespace aito
+}// namespace flwfrg

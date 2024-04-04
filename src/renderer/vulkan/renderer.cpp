@@ -4,7 +4,7 @@
 
 #include <imgui_impl_glfw.h>
 
-namespace aito
+namespace flwfrg
 {
 
 VulkanRenderer::VulkanRenderer(uint32_t initial_width, uint32_t initial_height, std::string window_name)
@@ -26,7 +26,7 @@ bool VulkanRenderer::begin_frame(float delta_time)
 	// Wait for the fence of the frame we wish to write to.
 	if (!vulkan_context_.get_current_frame_fence_in_flight().wait(std::numeric_limits<uint64_t>::max()))
 	{
-		AITO_WARN("Failure to wait for fence in flight");
+		FLOWFORGE_WARN("Failure to wait for fence in flight");
 		return false;
 	}
 
@@ -37,7 +37,7 @@ bool VulkanRenderer::begin_frame(float delta_time)
 				VK_NULL_HANDLE,
 				&vulkan_context_.image_index_))
 	{
-		AITO_WARN("Failed to acquire next image");
+		FLOWFORGE_WARN("Failed to acquire next image");
 		return false;
 	}
 
@@ -121,7 +121,7 @@ bool VulkanRenderer::end_frame()
 	{
 		if (!fence->wait(std::numeric_limits<uint64_t>::max()))
 		{
-			AITO_WARN("Failed to wait for image index fence in flight");
+			FLOWFORGE_WARN("Failed to wait for image index fence in flight");
 			return false;
 		}
 	}
@@ -149,11 +149,11 @@ bool VulkanRenderer::end_frame()
 				vulkan_context_.queue_complete_semaphores_[vulkan_context_.current_frame_],
 				vulkan_context_.image_index_))
 	{
-		AITO_WARN("Failed to present swap chain image");
+		FLOWFORGE_WARN("Failed to present swap chain image");
 		return false;
 	}
 
 	return true;
 }
 
-}// namespace aito
+}// namespace flwfrg

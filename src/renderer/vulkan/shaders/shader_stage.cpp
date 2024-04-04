@@ -7,7 +7,7 @@
 #include <optional>
 #include <string>
 
-namespace aito
+namespace flwfrg
 {
 
 VulkanShaderStage::~VulkanShaderStage()
@@ -36,8 +36,8 @@ std::optional<VulkanShaderStage> VulkanShaderStage::create_shader_module(VulkanC
 		file_name = "assets/shaders/" + name + get_shader_stage_file_extension(shader_stage_flag);
 	} catch (const std::runtime_error &e)
 	{
-		AITO_ERROR(e.what());
-		AITO_ERROR("Shader stage flag was {}", shader_stage_flag);
+		FLOWFORGE_ERROR(e.what());
+		FLOWFORGE_ERROR("Shader stage flag was {}", shader_stage_flag);
 		return std::nullopt;
 	}
 	VulkanShaderStage return_stage{context};
@@ -45,7 +45,7 @@ std::optional<VulkanShaderStage> VulkanShaderStage::create_shader_module(VulkanC
 	std::ifstream file(file_name, std::ios::ate | std::ios::binary);
 	if (!file.is_open())
 	{
-		AITO_ERROR("Failed to open file: {}", file_name);
+		FLOWFORGE_ERROR("Failed to open file: {}", file_name);
 		return std::nullopt;
 	}
 	std::vector<uint8_t> file_buffer;
@@ -66,7 +66,7 @@ std::optional<VulkanShaderStage> VulkanShaderStage::create_shader_module(VulkanC
 	// Create the shader module and check the result
 	if (vkCreateShaderModule(context->logical_device(), &return_stage.create_info, nullptr, &return_stage.handle_) != VK_SUCCESS)
 	{
-		AITO_ERROR("Failed to create shader module");
+		FLOWFORGE_ERROR("Failed to create shader module");
 		return std::nullopt;
 	}
 
@@ -85,4 +85,4 @@ VulkanShaderStage::VulkanShaderStage(VulkanContext *context)
 {
 }
 
-}// namespace aito
+}// namespace flwfrg

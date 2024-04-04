@@ -6,7 +6,7 @@
 #include "command_buffer.hpp"
 #include "buffer.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 
@@ -225,4 +225,4 @@ void VulkanImage::view_create(VkFormat format, VkImageAspectFlags aspect_flags)
 	}
 }
 
-}// namespace aito
+}// namespace flwfrg

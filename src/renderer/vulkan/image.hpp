@@ -4,7 +4,7 @@
 #include <vulkan/vulkan_core.h>
 
 
-namespace aito
+namespace flwfrg
 {
 
 class VulkanContext;
@@ -54,4 +54,4 @@ private:
 	friend VulkanContext;
 };
 
-}// namespace aito
+}// namespace flwfrg

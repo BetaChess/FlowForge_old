@@ -8,7 +8,7 @@
 
 #include <array>
 
-namespace aito
+namespace flwfrg
 {
 VulkanPipeline::~VulkanPipeline()
 {
@@ -147,7 +147,7 @@ std::optional<VulkanPipeline> VulkanPipeline::create_pipeline(VulkanContext *con
 	// Create the pipeline layout
 	if (vkCreatePipelineLayout(context->logical_device(), &pipeline_layout_info, nullptr, &return_pipeline.pipeline_layout_) != VK_SUCCESS)
 	{
-		AITO_ERROR("Failed to create pipeline layout");
+		FLOWFORGE_ERROR("Failed to create pipeline layout");
 		return std::nullopt;
 	}
 
@@ -177,7 +177,7 @@ std::optional<VulkanPipeline> VulkanPipeline::create_pipeline(VulkanContext *con
 	// Create the pipeline
 	if (vkCreateGraphicsPipelines(context->logical_device(), VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &return_pipeline.handle_) != VK_SUCCESS)
 	{
-		AITO_ERROR("Failed to create graphics pipeline");
+		FLOWFORGE_ERROR("Failed to create graphics pipeline");
 		return std::nullopt;
 	}
 
@@ -193,4 +193,4 @@ VulkanPipeline::VulkanPipeline(VulkanContext *context)
 {
 }
 
-}// namespace aito
+}// namespace flwfrg

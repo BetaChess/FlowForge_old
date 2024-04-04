@@ -6,7 +6,7 @@
 #include <map>
 #include <set>
 
-namespace aito
+namespace flwfrg
 {
 
 VulkanDevice::VulkanDevice(VulkanContext *context)
@@ -21,9 +21,9 @@ VulkanDevice::VulkanDevice(VulkanContext *context)
 VulkanDevice::~VulkanDevice()
 {
 	vkDestroyCommandPool(logical_device_, graphics_command_pool_, nullptr);
-	AITO_INFO("Graphics command pool destroyed");
+	FLOWFORGE_INFO("Graphics command pool destroyed");
 	vkDestroyDevice(logical_device_, nullptr);
-	AITO_INFO("Logical device destroyed");
+	FLOWFORGE_INFO("Logical device destroyed");
 }
 
 void VulkanDevice::pick_physical_device()
@@ -35,7 +35,7 @@ void VulkanDevice::pick_physical_device()
 	// Check if any of the graphics cards support vulkan.
 	if (deviceCount == 0)
 	{
-		AITO_FATAL("Failed to find GPUs with Vulkan support");
+		FLOWFORGE_FATAL("Failed to find GPUs with Vulkan support");
 		throw std::runtime_error("Failed to find GPUs with Vulkan support!");
 	}
 
@@ -57,7 +57,7 @@ void VulkanDevice::pick_physical_device()
 	vkGetPhysicalDeviceProperties(candidates.rbegin()->second, &deviceProperties);
 
 	// Print the name of the chosen GPU
-	AITO_INFO("Best GPU found is: {}", deviceProperties.deviceName);
+	FLOWFORGE_INFO("Best GPU found is: {}", deviceProperties.deviceName);
 
 
 	// Check if the best candidate is suitable at all
@@ -345,7 +345,7 @@ void VulkanDevice::create_logical_device()
 		throw std::runtime_error("Failed to create logical device");
 	}
 
-	AITO_INFO("Logical device created");
+	FLOWFORGE_INFO("Logical device created");
 
 	// Get queues.
 	vkGetDeviceQueue(
@@ -366,7 +366,7 @@ void VulkanDevice::create_logical_device()
 			0,
 			&transfer_queue_);
 
-	AITO_INFO("Queues obtained");
+	FLOWFORGE_INFO("Queues obtained");
 
 	// Create the command pool
 	VkCommandPoolCreateInfo pool_info{};
@@ -379,7 +379,7 @@ void VulkanDevice::create_logical_device()
 		throw std::runtime_error("Failed to create command pool");
 	}
 
-	AITO_INFO("Graphics command pool created");
+	FLOWFORGE_INFO("Graphics command pool created");
 }
 
-}// namespace aito
+}// namespace flwfrg

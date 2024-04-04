@@ -7,7 +7,7 @@
 
 #include "vulkan_context.hpp"
 
-namespace aito
+namespace flwfrg
 {
 
 
@@ -51,4 +51,4 @@ ImGuiInstance &ImGuiInstance::operator=(ImGuiInstance &&other) noexcept
 	}
 	return *this;
 }
-}// namespace aito
+}// namespace flwfrg

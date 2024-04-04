@@ -4,7 +4,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-namespace aito
+namespace flwfrg
 {
 class VulkanCommandBuffer;
 class VulkanRenderpass;
@@ -130,4 +130,4 @@ private:
 	friend VulkanRenderer;
 };
 
-}// namespace aito
+}// namespace flwfrg

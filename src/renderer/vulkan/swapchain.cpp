@@ -4,14 +4,14 @@
 #include "vulkan_context.hpp"
 
 
-namespace aito
+namespace flwfrg
 {
 VulkanSwapchain::VulkanSwapchain(VulkanContext *context)
 	: context_{context}
 {
 	assert(context != nullptr);
 	
-	AITO_INFO("Creating initial swapchain");
+	FLOWFORGE_INFO("Creating initial swapchain");
 	recreate_swapchain();
 }
 
@@ -24,7 +24,7 @@ VulkanSwapchain::~VulkanSwapchain()
 	}
 	
 	vkDestroySwapchainKHR(context_->device_.logical_device_, swapchain_, nullptr);
-	AITO_INFO("Vulkan swapchain destroyed");
+	FLOWFORGE_INFO("Vulkan swapchain destroyed");
 }
 
 bool VulkanSwapchain::acquire_next_image(uint64_t timeout_ns, VkSemaphore image_availiable_semaphore, VkFence fence, uint32_t *out_image_index)
@@ -78,7 +78,7 @@ bool VulkanSwapchain::present(VkQueue graphics_queue, VkQueue present_queue, VkS
 
 void VulkanSwapchain::recreate_swapchain()
 {
-	AITO_TRACE("Recreating swapchain");
+	FLOWFORGE_TRACE("Recreating swapchain");
 
 	vkDeviceWaitIdle(context_->device_.logical_device_);
 	
@@ -260,4 +260,4 @@ bool VulkanSwapchain::choose_swapchain_surface_format()
 }
 
 
-}// namespace aito
+}// namespace flwfrg
