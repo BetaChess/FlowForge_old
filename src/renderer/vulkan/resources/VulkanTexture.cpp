@@ -7,16 +7,15 @@
 
 namespace flwfrg
 {
-VulkanTexture::VulkanTexture(VulkanContext *context, uint32_t id, uint32_t width, uint32_t height, uint8_t channel_count, bool has_transparency, std::vector<Data> data)
+VulkanTexture::VulkanTexture(VulkanContext *context, uint32_t id, uint32_t width, uint32_t height, bool has_transparency, std::vector<Data> data)
 	: context_{context},
 	  id_{id},
 	  width_{width},
 	  height_{height},
-	  channel_count_{channel_count},
 	  has_transparency_{has_transparency},
 	  data_{std::move(data)}
 {
-	VkDeviceSize image_size = width * height * channel_count;
+	VkDeviceSize image_size = width * height * sizeof(Data);
 
 	VkFormat image_format = VK_FORMAT_R8G8B8A8_UNORM;
 
@@ -86,6 +85,43 @@ VulkanTexture::~VulkanTexture()
 	{
 		vkDestroySampler(context_->logical_device(), sampler_, nullptr);
 	}
+}
+VulkanTexture::VulkanTexture(VulkanTexture &&other) noexcept
+	: context_(other.context_),
+	  id_(other.id_),
+	  width_(other.width_),
+	  height_(other.height_),
+	  has_transparency_(other.has_transparency_),
+	  generation_(other.generation_),
+	  data_(std::move(other.data_)),
+	  image_(std::move(other.image_)),
+	  sampler_(other.sampler_)
+{
+	other.sampler_ = VK_NULL_HANDLE;
+}
+VulkanTexture &VulkanTexture::operator=(VulkanTexture &&other) noexcept
+{
+	if (this != &other)
+	{
+		if (sampler_ != VK_NULL_HANDLE)
+		{
+			vkDestroySampler(context_->logical_device(), sampler_, nullptr);
+		}
+
+		context_ = other.context_;
+		id_ = other.id_;
+		width_ = other.width_;
+		height_ = other.height_;
+		has_transparency_ = other.has_transparency_;
+		generation_ = other.generation_;
+		data_ = std::move(other.data_);
+		image_ = std::move(other.image_);
+		sampler_ = other.sampler_;
+
+		other.sampler_ = VK_NULL_HANDLE;
+	}
+
+	return *this;
 }
 
 }// namespace flwfrg

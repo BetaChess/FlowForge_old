@@ -3,6 +3,7 @@
 #include "object_shader.hpp"
 
 #include "../vulkan_context.hpp"
+#include "renderer/vulkan/resources/VulkanTexture.hpp"
 #include "vertex.hpp"
 
 namespace flwfrg
@@ -48,8 +49,10 @@ VulkanObjectShader::VulkanObjectShader(VulkanContext *context)
 	global_pool_size.descriptorCount = context_->get_swapchain().get_image_count();
 
 	// Local/object descriptors
+	const uint32_t local_sampler_count = 1;
 	std::array<VkDescriptorType, VULKAN_OBJECT_SHADER_DESCRIPTOR_COUNT> descriptor_types = {
-			VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER};
+			VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER};
 	std::array<VkDescriptorSetLayoutBinding, VULKAN_OBJECT_SHADER_DESCRIPTOR_COUNT> bindings{};
 	for (uint32_t i = 0; i < VULKAN_OBJECT_SHADER_DESCRIPTOR_COUNT; i++)
 	{
@@ -69,12 +72,12 @@ VulkanObjectShader::VulkanObjectShader(VulkanContext *context)
 	local_descriptor_set_layout_ = VulkanDescriptorSetLayout(context_, local_layout_create_info);
 
 	// Local layout pool
-	VkDescriptorPoolSize local_pool_size{};
-	local_pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	local_pool_size.descriptorCount = VULKAN_OBJECT_SHADER_MAX_OBJECT_COUNT;
+	std::array<VkDescriptorPoolSize, VULKAN_OBJECT_SHADER_DESCRIPTOR_COUNT> local_pool_sizes{};
+	local_pool_sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	local_pool_sizes[0].descriptorCount = VULKAN_OBJECT_SHADER_MAX_OBJECT_COUNT;
 
-	std::vector<VkDescriptorPoolSize> local_pool_sizes = {
-			local_pool_size};
+	local_pool_sizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	local_pool_sizes[1].descriptorCount = local_sampler_count * VULKAN_OBJECT_SHADER_MAX_OBJECT_COUNT;
 
 	VkDescriptorPoolCreateInfo local_pool_info{};
 	local_pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -275,6 +278,38 @@ void VulkanObjectShader::update_object(GeometryRenderData data)
 	}
 	descriptor_index++;
 
+	const uint32_t sampler_count = 1;
+	std::array<VkDescriptorImageInfo, 1> image_infos;
+	for (uint32_t sampler_index = 0; sampler_index < sampler_count; sampler_index++)
+	{
+		VulkanTexture* texture = data.textures[sampler_index];
+		auto& descriptor_generation = object_state->descriptor_states[descriptor_index].generations[image_index];
+
+		if (texture && (descriptor_generation != texture->get_generation() || descriptor_generation == std::numeric_limits<uint32_t>::max()))
+		{
+			image_infos[0].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			image_infos[0].imageView = texture->get_image().get_image_view();
+			image_infos[0].sampler = texture->get_sampler();
+			
+			descriptor_writes[descriptor_count].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptor_writes[descriptor_count].dstSet = object_descriptor_set;
+			descriptor_writes[descriptor_count].dstBinding = descriptor_index;
+			descriptor_writes[descriptor_count].dstArrayElement = 0;
+			descriptor_writes[descriptor_count].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptor_writes[descriptor_count].descriptorCount = image_infos.size();
+			descriptor_writes[descriptor_count].pImageInfo = image_infos.data();
+			
+			descriptor_count++;
+			object_state->descriptor_states[descriptor_index].generations[image_index] = texture->get_generation();
+
+			// If not using default texture, sync the generation. 
+			if (texture->get_generation() != std::numeric_limits<uint32_t>::max()) {
+				descriptor_generation = texture->get_generation();
+			}
+			descriptor_index++;
+		}
+	}
+
 	if (descriptor_count > 0)
 	{
 		vkUpdateDescriptorSets(context_->logical_device(), descriptor_count, descriptor_writes.data(), 0, nullptr);
@@ -354,8 +389,8 @@ void VulkanObjectShader::release_resources(uint32_t object_id)
 			generation = std::numeric_limits<uint32_t>::max();
 		}
 	}
-	
-	
+
+
 	// TODO: add the object id back into the pool
 }
 

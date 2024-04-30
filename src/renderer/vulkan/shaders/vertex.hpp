@@ -11,13 +11,15 @@ namespace flwfrg
 struct Vertex3d
 {
 	glm::vec4 position{0};
+	glm::vec2 texture_coordiante{0};
 
 	static std::vector<VkVertexInputAttributeDescription> get_binding_description()
 	{
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
 
 		attributeDescriptions.push_back({0, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex3d, position)});
-
+		attributeDescriptions.push_back({1, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex3d, texture_coordiante)});
+		
 		return attributeDescriptions;
 	}
 	

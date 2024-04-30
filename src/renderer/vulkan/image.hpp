@@ -31,7 +31,7 @@ public:
 	VulkanImage(const VulkanImage &) = delete;
 	VulkanImage &operator=(const VulkanImage &) = delete;
 	VulkanImage(VulkanImage &&other) noexcept;
-	VulkanImage &operator=(VulkanImage &&other) noexcept = default;
+	VulkanImage &operator=(VulkanImage &&other) noexcept;
 
 	void transition_layout(VulkanCommandBuffer &command_buffer,
 						  VkFormat format,
@@ -39,6 +39,11 @@ public:
 						  VkImageLayout new_layout);
 
 	void copy_from_buffer(VulkanCommandBuffer& command_buffer, VulkanBuffer& buffer);
+
+	[[nodiscard]] inline VkImage get_image_handle() const { return image_handle_; }
+	[[nodiscard]] inline VkImageView get_image_view() const { return view_; }
+	[[nodiscard]] inline uint32_t get_width() const { return width_; }
+	[[nodiscard]] inline uint32_t get_height() const { return height_; }
 
 private:
 	VulkanContext *context_ = nullptr;

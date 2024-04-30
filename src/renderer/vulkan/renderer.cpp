@@ -10,6 +10,7 @@ namespace flwfrg
 VulkanRenderer::VulkanRenderer(uint32_t initial_width, uint32_t initial_height, std::string window_name)
 	: window_name_(std::move(window_name)), window_(initial_width, initial_height, window_name_), vulkan_context_(window_)
 {
+	generate_default_texture();
 }
 VulkanRenderer::~VulkanRenderer()
 {
@@ -84,6 +85,50 @@ void VulkanRenderer::update_global_state(glm::mat4 projection, glm::mat4 view)
 	vulkan_context_.object_shader_.global_ubo.view = view;
 
 	vulkan_context_.object_shader_.update_global_state(vulkan_context_.get_delta_time());
+}
+
+void VulkanRenderer::update_projection(glm::mat4 projection)
+{
+	state_.projection = projection;
+}
+
+void VulkanRenderer::update_view(glm::mat4 view)
+{
+	state_.view = view;
+}
+
+void VulkanRenderer::update_near_clip(float near_clip)
+{
+	state_.near_clip = near_clip;
+}
+
+void VulkanRenderer::update_far_clip(float far_clip)
+{
+	state_.far_clip = far_clip;
+}
+
+void VulkanRenderer::generate_default_texture()
+{
+	// Create a 256 by 256 default texture
+	constexpr uint32_t texture_width = 256;
+	constexpr uint32_t texture_height = 256;
+	
+	std::vector<VulkanTexture::Data> texture_data;
+	texture_data.resize(texture_width * texture_height);
+
+	constexpr VulkanTexture::Data purple = {.color = {200.f / 255.0f, 0.f, 200.f / 255.0f, 1}};
+	constexpr VulkanTexture::Data black = {.color = {0, 0, 0, 1.f}};
+	for (size_t x = 0; x < texture_width; x++)
+	{
+		const uint8_t xsector = x / 8;
+		for (size_t y = 0; y < texture_height; y++)
+		{
+			const uint8_t ysector = x / 8;
+			texture_data[x + y * texture_width] = (xsector + ysector) % 2 ? purple : black;
+		}
+	}
+
+	state_.default_texture = std::move(VulkanTexture(&vulkan_context_, 0, texture_width, texture_height, false, texture_data));
 }
 
 bool VulkanRenderer::end_frame()

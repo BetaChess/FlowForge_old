@@ -126,6 +126,39 @@ VulkanImage::VulkanImage(VulkanImage &&other) noexcept
 	other.width_ = 0;
 	other.height_ = 0;
 }
+VulkanImage &VulkanImage::operator=(VulkanImage &&other) noexcept
+{
+	if (this != &other)
+	{
+		if (view_)
+		{
+			vkDestroyImageView(context_->device_.logical_device_, view_, nullptr);
+		}
+		if (image_handle_)
+		{
+			vkDestroyImage(context_->device_.logical_device_, image_handle_, nullptr);
+		}
+		if (memory_)
+		{
+			vkFreeMemory(context_->device_.logical_device_, memory_, nullptr);
+		}
+
+		context_ = other.context_;
+		image_handle_ = other.image_handle_;
+		memory_ = other.memory_;
+		view_ = other.view_;
+		width_ = other.width_;
+		height_ = other.height_;
+
+		other.image_handle_ = VK_NULL_HANDLE;
+		other.memory_ = VK_NULL_HANDLE;
+		other.view_ = VK_NULL_HANDLE;
+		other.width_ = 0;
+		other.height_ = 0;
+	}
+
+	return *this;
+}
 
 void VulkanImage::transition_layout(VulkanCommandBuffer &command_buffer, VkFormat format, VkImageLayout old_layout, VkImageLayout new_layout)
 {

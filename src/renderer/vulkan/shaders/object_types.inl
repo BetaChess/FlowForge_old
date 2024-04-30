@@ -19,7 +19,7 @@ struct VulkanDescriptorState
 	std::array<uint32_t, 3> generations{};
 };
 
-#define VULKAN_OBJECT_SHADER_DESCRIPTOR_COUNT 1
+#define VULKAN_OBJECT_SHADER_DESCRIPTOR_COUNT 2
 #define VULKAN_OBJECT_SHADER_MAX_OBJECT_COUNT 1024
 
 struct ObjectShaderObjectState
