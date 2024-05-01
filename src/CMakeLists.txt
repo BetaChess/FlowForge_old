@@ -1,5 +1,15 @@
 cmake_minimum_required(VERSION 3.20)
 
+## Compile C libary
+set(STB_INTERNAL_LIB_NAME stb_internal)
+
+add_library(${STB_INTERNAL_LIB_NAME} STATIC renderer/stb_image.c)
+
+target_include_directories(${STB_INTERNAL_LIB_NAME}
+						   PUBLIC ../vendor/stb
+)
+
+## Configuration for the C++ Project
 set(SOURCES
 	# Dear ImGui sources
 	${IMGUI_SOURCES}
@@ -71,6 +81,7 @@ target_include_directories(${PROJECT_NAME}
 						   PUBLIC ${IMGUI_DIR}/backends/
 						   PUBLIC ${IMGUI_DIR}
 						   PUBLIC ../vendor/spdlog/include
+						   PUBLIC ../vendor/stb
 )
 
 target_link_directories(${PROJECT_NAME}
@@ -80,6 +91,7 @@ target_link_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
 					  glfw
 					  ${Vulkan_LIBRARY}
+					  ${STB_INTERNAL_LIB_NAME}
 )
 
 include_directories(.)
