@@ -2,14 +2,16 @@
 
 #include "object_shader.hpp"
 
+#include <utility>
+
 #include "../vulkan_context.hpp"
 #include "renderer/vulkan/resources/VulkanTexture.hpp"
 #include "vertex.hpp"
 
 namespace flwfrg
 {
-VulkanObjectShader::VulkanObjectShader(VulkanContext *context)
-	: context_(context)
+VulkanObjectShader::VulkanObjectShader(VulkanContext *context, VulkanTexture *default_diffuse)
+	: context_(context), default_diffuse_(default_diffuse)
 {
 	assert(context != nullptr);
 
@@ -152,7 +154,7 @@ VulkanObjectShader::VulkanObjectShader(VulkanContext *context)
 		throw std::runtime_error("Failed to create pipeline");
 	}
 
-	pipeline_.emplace(std::move(created_pipeline.value()));
+	pipeline_ = std::move(created_pipeline.value());
 
 	// Create global uniform buffer
 	global_uniform_buffer_ = VulkanBuffer(context_, sizeof(GlobalUniformObject) * 3,
@@ -180,8 +182,52 @@ VulkanObjectShader::VulkanObjectShader(VulkanContext *context)
 	// Create local uniform buffer
 	local_uniform_buffer_ = VulkanBuffer(context_, sizeof(LocalUniformObject) * VULKAN_OBJECT_SHADER_MAX_OBJECT_COUNT,
 										 static_cast<VkBufferUsageFlagBits>(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT),
-										 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+										 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 										 true);
+}
+
+VulkanObjectShader::VulkanObjectShader(VulkanObjectShader &&other)
+	: context_(other.context_),
+	  stages(std::move(other.stages)),
+	  global_descriptor_pool_(std::move(other.global_descriptor_pool_)),
+	  local_descriptor_pool_(std::move(other.local_descriptor_pool_)),
+	  global_descriptor_set_layout_(std::move(other.global_descriptor_set_layout_)),
+	  local_descriptor_set_layout_(std::move(other.local_descriptor_set_layout_)),
+	  global_descriptor_sets_(std::move(other.global_descriptor_sets_)),
+	  global_descriptor_updated_(std::move(other.global_descriptor_updated_)),
+	  global_uniform_buffer_(std::move(other.global_uniform_buffer_)),
+	  local_uniform_buffer_(std::move(other.local_uniform_buffer_)),
+	  object_uniform_buffer_index(other.object_uniform_buffer_index),
+	  object_states_(std::move(other.object_states_)),
+	  default_diffuse_(other.default_diffuse_),
+	  pipeline_(std::move(other.pipeline_))
+{
+	other.context_ = nullptr;
+	other.default_diffuse_ = nullptr;
+}
+VulkanObjectShader &VulkanObjectShader::operator=(VulkanObjectShader &&other)
+{
+	if (this != &other)
+	{
+		context_ = other.context_;
+		stages = std::move(other.stages);
+		global_descriptor_pool_ = std::move(other.global_descriptor_pool_);
+		local_descriptor_pool_ = std::move(other.local_descriptor_pool_);
+		global_descriptor_set_layout_ = std::move(other.global_descriptor_set_layout_);
+		local_descriptor_set_layout_ = std::move(other.local_descriptor_set_layout_);
+		global_descriptor_sets_ = std::move(other.global_descriptor_sets_);
+		global_descriptor_updated_ = std::move(other.global_descriptor_updated_);
+		global_uniform_buffer_ = std::move(other.global_uniform_buffer_);
+		local_uniform_buffer_ = std::move(other.local_uniform_buffer_);
+		object_uniform_buffer_index = other.object_uniform_buffer_index;
+		object_states_ = std::move(other.object_states_);
+		default_diffuse_ = other.default_diffuse_;
+		pipeline_ = std::move(other.pipeline_);
+
+		other.context_ = nullptr;
+		other.default_diffuse_ = nullptr;
+	}
+	return *this;
 }
 
 void VulkanObjectShader::update_global_state(float delta_time)
@@ -224,7 +270,7 @@ void VulkanObjectShader::update_global_state(float delta_time)
 	// Bind descriptor set
 	vkCmdBindDescriptorSets(command_buffer.get_handle(),
 							VK_PIPELINE_BIND_POINT_GRAPHICS,
-							pipeline_->layout(),
+							pipeline_.layout(),
 							0,
 							1,
 							&global_descriptor,
@@ -237,7 +283,7 @@ void VulkanObjectShader::update_object(GeometryRenderData data)
 	VulkanCommandBuffer &command_buffer = context_->get_command_buffer();
 	auto image_index = context_->image_index();
 
-	vkCmdPushConstants(command_buffer.get_handle(), pipeline_->layout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &data.model);
+	vkCmdPushConstants(command_buffer.get_handle(), pipeline_.layout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &data.model);
 
 	// Obtain material data
 	ObjectShaderObjectState *object_state = &object_states_[data.object_id];
@@ -285,6 +331,13 @@ void VulkanObjectShader::update_object(GeometryRenderData data)
 		VulkanTexture* texture = data.textures[sampler_index];
 		auto& descriptor_generation = object_state->descriptor_states[descriptor_index].generations[image_index];
 
+		if (texture->get_generation() == std::numeric_limits<uint32_t>::max())
+		{
+			texture = default_diffuse_;
+
+			descriptor_generation = std::numeric_limits<uint32_t>::max();
+		}
+
 		if (texture && (descriptor_generation != texture->get_generation() || descriptor_generation == std::numeric_limits<uint32_t>::max()))
 		{
 			image_infos[0].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -318,7 +371,7 @@ void VulkanObjectShader::update_object(GeometryRenderData data)
 	// Bind descriptor set
 	vkCmdBindDescriptorSets(command_buffer.get_handle(),
 							VK_PIPELINE_BIND_POINT_GRAPHICS,
-							pipeline_->layout(),
+							pipeline_.layout(),
 							1,
 							1,
 							&object_descriptor_set,
@@ -328,8 +381,7 @@ void VulkanObjectShader::update_object(GeometryRenderData data)
 
 void VulkanObjectShader::use()
 {
-	assert(pipeline_.has_value());
-	pipeline_->bind(context_->get_command_buffer(), VK_PIPELINE_BIND_POINT_GRAPHICS);
+	pipeline_.bind(context_->get_command_buffer(), VK_PIPELINE_BIND_POINT_GRAPHICS);
 }
 
 uint32_t VulkanObjectShader::acquire_resources()

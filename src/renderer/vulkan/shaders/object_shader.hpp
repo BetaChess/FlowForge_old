@@ -16,14 +16,15 @@ public:
 	GlobalUniformObject global_ubo{};
 
 public:
-	explicit VulkanObjectShader(VulkanContext *context);
+	explicit VulkanObjectShader() = default;
+	explicit VulkanObjectShader(VulkanContext *context, VulkanTexture* default_diffuse);
 	~VulkanObjectShader() = default;
 
 	// Not copyable or movable
 	VulkanObjectShader(const VulkanObjectShader &) = delete;
 	VulkanObjectShader &operator=(const VulkanObjectShader &) = delete;
-	VulkanObjectShader(VulkanObjectShader &&) = delete;
-	VulkanObjectShader &operator=(VulkanObjectShader &&) = delete;
+	VulkanObjectShader(VulkanObjectShader && other);
+	VulkanObjectShader &operator=(VulkanObjectShader && other);
 
 	// Methods
 
@@ -55,11 +56,14 @@ private:
 
 	// local object uniform buffer
 	VulkanBuffer local_uniform_buffer_{};
-	uint32_t object_uniform_buffer_index;// Todo: manage a free list instead
+	uint32_t object_uniform_buffer_index = 0;// Todo: manage a free list instead
 
 	std::array<ObjectShaderObjectState, VULKAN_OBJECT_SHADER_MAX_OBJECT_COUNT> object_states_{}; // Todo: Make dynamic later
 
-	std::optional<VulkanPipeline> pipeline_{};
+	// Pointers to default textures
+	VulkanTexture* default_diffuse_{};
+	
+	VulkanPipeline pipeline_{};
 
 	// Static members
 

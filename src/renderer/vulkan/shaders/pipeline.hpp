@@ -13,10 +13,12 @@ class VulkanCommandBuffer;
 class VulkanPipeline
 {
 public:
+	explicit VulkanPipeline() = default;
 	~VulkanPipeline();
 
 	// Move constructor
 	VulkanPipeline(VulkanPipeline &&other) noexcept;
+	VulkanPipeline &operator=(VulkanPipeline &&other) noexcept;
 
 	// Not copyable
 	VulkanPipeline(const VulkanPipeline &other) = delete;

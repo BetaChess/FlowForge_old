@@ -49,6 +49,9 @@ private:
 
 	RendererState state_;
 
+	// non-owning
+	VulkanTexture* default_diffuse_ = nullptr;
+	
 	void generate_default_texture();
 };
 

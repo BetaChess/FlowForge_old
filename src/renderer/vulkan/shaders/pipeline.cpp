@@ -29,6 +29,29 @@ VulkanPipeline::VulkanPipeline(VulkanPipeline &&other) noexcept
 	other.handle_ = VK_NULL_HANDLE;
 	other.pipeline_layout_ = VK_NULL_HANDLE;
 }
+VulkanPipeline &VulkanPipeline::operator=(VulkanPipeline &&other) noexcept
+{
+	if (this != &other)
+	{
+		if (handle_ != VK_NULL_HANDLE)
+		{
+			vkDestroyPipeline(context_->logical_device(), handle_, nullptr);
+		}
+		if (pipeline_layout_ != VK_NULL_HANDLE)
+		{
+			vkDestroyPipelineLayout(context_->logical_device(), pipeline_layout_, nullptr);
+		}
+
+		context_ = other.context_;
+		handle_ = other.handle_;
+		pipeline_layout_ = other.pipeline_layout_;
+
+		other.handle_ = VK_NULL_HANDLE;
+		other.pipeline_layout_ = VK_NULL_HANDLE;
+	}
+
+	return *this;
+}
 
 std::optional<VulkanPipeline> VulkanPipeline::create_pipeline(VulkanContext *context, const VulkanRenderpass &renderpass, const std::vector<VkVertexInputAttributeDescription> &attributes, const std::vector<VkDescriptorSetLayout> &descriptor_set_layouts, const std::vector<VkPipelineShaderStageCreateInfo> &stages, VkViewport viewport, VkRect2D scissor, bool is_wireframe)
 {

@@ -11,6 +11,9 @@ VulkanRenderer::VulkanRenderer(uint32_t initial_width, uint32_t initial_height, 
 	: window_name_(std::move(window_name)), window_(initial_width, initial_height, window_name_), vulkan_context_(window_)
 {
 	generate_default_texture();
+	default_diffuse_ = &state_.default_texture;
+	vulkan_context_.object_shader_ = std::move(VulkanObjectShader(&vulkan_context_, default_diffuse_));
+	vulkan_context_.init_imgui();
 }
 VulkanRenderer::~VulkanRenderer()
 {

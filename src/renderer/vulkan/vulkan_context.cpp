@@ -95,8 +95,6 @@ VulkanContext::VulkanContext(Window& window)
 	}
 
 	images_in_flight_.resize(swapchain_.get_image_count());
-
-	imgui_instance_ = ImGuiInstance(this);
 }
 VulkanContext::~VulkanContext()
 {
@@ -126,6 +124,11 @@ void VulkanContext::populate_imgui_init_info(ImGui_ImplVulkan_InitInfo &out_init
 	out_init_info.Allocator = nullptr;
 	out_init_info.CheckVkResultFn = nullptr;
 	out_init_info.RenderPass = get_main_render_pass();
+}
+
+void VulkanContext::init_imgui()
+{
+	imgui_instance_ = ImGuiInstance(this);
 }
 
 int32_t VulkanContext::find_memory_index(uint32_t type_filter, VkMemoryPropertyFlags memory_flags)

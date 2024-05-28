@@ -89,6 +89,9 @@ public:
 	void populate_imgui_init_info(ImGui_ImplVulkan_InitInfo &out_init_info);
 	[[nodiscard]] VkRenderPass get_main_render_pass() const { return main_renderpass_.get_handle(); };
 
+	void init_imgui();
+	void set_default_diffuse_texture(VulkanTexture* new_default);
+
 	int32_t find_memory_index(uint32_t type_filter, VkMemoryPropertyFlags memory_flags);
 
 private:
@@ -137,7 +140,7 @@ private:
 	uint32_t image_index_;
 	uint32_t current_frame_;
 
-	VulkanObjectShader object_shader_{this};
+	VulkanObjectShader object_shader_{};
 
 	ImGuiInstance imgui_instance_{};
 

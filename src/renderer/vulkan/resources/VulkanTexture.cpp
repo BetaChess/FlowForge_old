@@ -5,6 +5,8 @@
 #include "renderer/vulkan/buffer.hpp"
 #include "renderer/vulkan/vulkan_context.hpp"
 
+#include <stb_image.h>
+
 namespace flwfrg
 {
 VulkanTexture::VulkanTexture(VulkanContext *context, uint32_t id, uint32_t width, uint32_t height, bool has_transparency, std::vector<Data> data)
@@ -122,6 +124,68 @@ VulkanTexture &VulkanTexture::operator=(VulkanTexture &&other) noexcept
 	}
 
 	return *this;
+}
+
+bool VulkanTexture::load_texture_from_file(std::string texture_name)
+{
+	std::string path = "assets/textures/" + texture_name + ".png";
+	const int32_t required_channel_count = 4;
+	stbi_set_flip_vertically_on_load(true);
+	
+	int32_t width, height, channel_count;
+
+	uint8_t *data = stbi_load(path.c_str(),
+							  &width,
+							  &height,
+							  &channel_count,
+							  required_channel_count);
+	
+
+	if (stbi_failure_reason())
+	{
+		FLOWFORGE_WARN("Failed to load texture '{}', {}", path, stbi_failure_reason());
+	}
+	
+	if (data == nullptr)
+	{
+		return false;
+	}
+
+	uint32_t generation = generation_;
+	generation_ = std::numeric_limits<uint32_t>::max();
+	uint64_t total_size = width * height * required_channel_count;
+
+	bool has_transparency = false;
+	for (size_t i = 0; i < total_size; i += 4)
+	{
+		uint8_t a = data[i + 3];
+		if (a < 255)
+		{
+			has_transparency = true;
+			break;
+		}
+	}
+
+	std::vector<Data> data_vec;
+	data_vec.resize(total_size / sizeof(Data));
+	for (size_t i = 0; i < total_size; i += 4)
+	{
+		data_vec[i / 4].color.r = data[i] / 255.0f;
+		data_vec[i / 4].color.g = data[i + 1] / 255.0f;
+		data_vec[i / 4].color.b = data[i + 2] / 255.0f;
+		data_vec[i / 4].color.a = data[i + 3] / 255.0f;
+	}
+
+	stbi_image_free(data);
+
+	*this = VulkanTexture{context_, id_, static_cast<uint32_t>(width), static_cast<uint32_t>(height), has_transparency, data_vec};
+
+	if (generation == std::numeric_limits<uint32_t>::max())
+		generation_ = 0;
+	else
+		generation_ = generation + 1;
+	
+	return true;
 }
 
 }// namespace flwfrg

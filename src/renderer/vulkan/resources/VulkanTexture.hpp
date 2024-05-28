@@ -46,6 +46,8 @@ public:
 	inline const VulkanImage &get_image() const { return image_; }
 	[[nodiscard]] VkSampler get_sampler() const { return sampler_; }
 
+	bool load_texture_from_file(std::string texture_name);
+
 private:
 	VulkanContext *context_ = nullptr;
 
